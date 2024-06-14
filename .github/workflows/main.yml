@@ -1,3 +1,4 @@
+
 name: Deploy to DigitalOcean
 
 on:
@@ -11,30 +12,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Set up SSH agent with the private key stored in GitHub Secrets
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
 
-      # Add DigitalOcean server to known_hosts to avoid SSH authenticity prompts
       - name: Add DigitalOcean server to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      # Install dependencies and build the React app
       - name: Build and deploy React app
         run: |
           npm install
           npm run build
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
 
-      # Restart Nginx on the server to apply changes
       - name: Restart Nginx
         run: |
           ssh root@64.227.65.168 'sudo systemctl restart nginx'
+I want to deploy react correct to digitalocean
+
