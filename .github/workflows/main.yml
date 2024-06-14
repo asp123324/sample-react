@@ -23,8 +23,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H 64.227.65.168 >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts  
-
+        
       - name: Build and deploy React app
         run: |
           npm install
