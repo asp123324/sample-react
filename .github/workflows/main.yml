@@ -24,19 +24,19 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      - name: Install dependencies
-        run: |
-          npm install
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-      - name: Build the React app
+      - name: Install dependencies and build React app
         run: |
+          npm ci
           npm run build
 
-      - name: Deploy React app via rsync
+      - name: Deploy to DigitalOcean server
         run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
-        env:
-          RSYNC_RSH: "ssh -v"
 
       - name: Restart Nginx
         run: |
