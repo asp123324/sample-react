@@ -24,10 +24,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+      
 
       - name: Install dependencies and build React app
         run: |
