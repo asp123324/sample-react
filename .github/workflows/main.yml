@@ -19,11 +19,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
 
-      - name: Install dependencies
-        run: npm install --production
+      - name: Add DigitalOcean server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      - name: Build React app
-        run: npm run build
+      - name: Install dependencies and build React app
+        run: |
+          npm install --production
+          npm run build
 
       - name: Deploy to DigitalOcean
         run: |
