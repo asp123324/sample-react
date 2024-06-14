@@ -18,24 +18,16 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
-
+          
       - name: Add DigitalOcean server to known_hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies and build React app
+      - name: Build and deploy React app
         run: |
-          npm ci
+          npm install
           npm run build
-
-      - name: Deploy to DigitalOcean server
-        run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
 
       - name: Restart Nginx
