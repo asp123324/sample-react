@@ -19,19 +19,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
 
-      - name: Add DigitalOcean server to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
+      # - name: Add DigitalOcean server to known_hosts
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      - name: Install Node.js and npm
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm ci
-
+      
+     
       - name: Build React app
         run: npm run build
 
