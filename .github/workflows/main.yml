@@ -24,15 +24,9 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      
-
-      - name: Install dependencies and build React app
+      - name: Build and deploy React app
         run: |
-          npm ci
+          npm install --production
           npm run build
-
-      - name: Deploy to DigitalOcean server
-        run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
-
-      
+          ssh root@64.227.65.168 'sudo systemctl restart nginx'
