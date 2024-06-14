@@ -34,5 +34,4 @@ jobs:
       - name: Restart Nginx
         run: |
           ssh root@64.227.65.168 'sudo systemctl restart nginx'
-I want to deploy react correct to digitalocean
 
