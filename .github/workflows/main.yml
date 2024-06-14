@@ -22,14 +22,20 @@ jobs:
       - name: Add DigitalOcean server to known_hosts
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H 64.227.65.168 >> ~/.ssh/known_hosts
-        
-      - name: Build and deploy React app
+          ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies and build React app
         run: |
-          npm install
+          npm ci
           npm run build
+
+      - name: Deploy to DigitalOcean server
+        run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
 
-      - name: Restart Nginx
-        run: |
-          ssh root@64.227.65.168 'sudo systemctl restart nginx'
+      
