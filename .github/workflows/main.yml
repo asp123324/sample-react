@@ -19,14 +19,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
 
-      - name: Add DigitalOcean server to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
+      - name: Install dependencies
+        run: npm install --production
 
-      - name: Build and deploy React app
+      - name: Build React app
+        run: npm run build
+
+      - name: Deploy to DigitalOcean
         run: |
-          npm install --production
-          npm run build
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
+
+      - name: Restart Nginx
+        run: |
           ssh root@64.227.65.168 'sudo systemctl restart nginx'
