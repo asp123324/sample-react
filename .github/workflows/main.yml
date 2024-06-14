@@ -24,11 +24,19 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-      - name: Build and deploy React app
+      - name: Install dependencies
         run: |
           npm install
+
+      - name: Build the React app
+        run: |
           npm run build
+
+      - name: Deploy React app via rsync
+        run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
+        env:
+          RSYNC_RSH: "ssh -v"
 
       - name: Restart Nginx
         run: |
