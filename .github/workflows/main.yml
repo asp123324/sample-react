@@ -19,7 +19,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
           
-
       - name: Add DigitalOcean server to known_hosts
         run: |
           mkdir -p ~/.ssh
