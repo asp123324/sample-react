@@ -18,6 +18,10 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+          # The following line ensures that SSH agent is stopped after use,
+          # which might resolve issues where the agent persists after the job.
+          # This could potentially lead to issues with subsequent jobs in the workflow.
+          stop-at-end: true
 
       - name: Add DigitalOcean server to known_hosts
         run: |
@@ -26,7 +30,10 @@ jobs:
 
       - name: Build and deploy React app
         run: |
-          npm install --production
+          npm install
           npm run build
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
+
+      - name: Restart Nginx
+        run: |
           ssh root@64.227.65.168 'sudo systemctl restart nginx'
