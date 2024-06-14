@@ -22,16 +22,8 @@ jobs:
       - name: Add DigitalOcean server to known_hosts
         run: |
           mkdir -p ~/.ssh
-          retry() {
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts && break
-              n=$((n+1))
-              sleep 15
-            done
-          }
-          retry
+          ssh-keyscan -H 64.227.65.168 >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts  
 
       - name: Build and deploy React app
         run: |
