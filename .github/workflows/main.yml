@@ -25,7 +25,9 @@ jobs:
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
       
-     
+      - name: Install dependencies
+        run: npm install
+
       - name: Build React app
         run: npm run build
 
