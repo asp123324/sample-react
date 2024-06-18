@@ -22,7 +22,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
-          cat ~/.ssh/known_hosts
+          
 
       
 
