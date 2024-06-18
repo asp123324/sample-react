@@ -22,13 +22,16 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
-          
+          chmod 600 ~/.ssh/known_hosts
 
-      
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
 
       - name: Install dependencies and build React app
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Deploy to DigitalOcean
@@ -37,4 +40,8 @@ jobs:
         run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
 
-    
+      - name: Restart Nginx
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+        run: |
+          ssh -o StrictHostKeyChecking=no root@64.227.65.168 'sudo systemctl restart nginx'
