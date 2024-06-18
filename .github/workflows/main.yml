@@ -20,12 +20,10 @@ jobs:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
 
       - name: Add DigitalOcean server to known_hosts
-        run: |
-          mkdir -p $HOME/.ssh
-          ssh-keyscan 64.227.65.168 >> $HOME/.ssh/known_hosts
-          chmod 600 $HOME/.ssh/known_hosts
-          cat $HOME/.ssh/known_hosts
-        shell: bash
+        run: |   
+         mkdir -p ~/.ssh
+         ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
+
 
       
 
