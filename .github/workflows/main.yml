@@ -22,22 +22,19 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
           cat ~/.ssh/known_hosts
 
-      - name: Install Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
+      
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies and build React app
+        run: |
+          npm ci
+          npm run build
 
-      - name: Build React app
-        run: npm run build
-
-      - name: Deploy to DigitalOcean server
+      - name: Deploy to DigitalOcean
         env:
           RSYNC_RSH: "ssh -o StrictHostKeyChecking=no"
         run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
+
+    
