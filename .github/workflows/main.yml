@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy-prod:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +19,11 @@ jobs:
           ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
 
       - name: Add DigitalOcean server to known_hosts
-        run: |   
-         mkdir -p ~/.ssh
-         ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan 64.227.65.168 >> ~/.ssh/known_hosts
 
-
-      
+     
 
       - name: Install dependencies
         run: npm install
@@ -34,5 +32,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to DigitalOcean server
+        env:
+          RSYNC_RSH: "ssh -o StrictHostKeyChecking=no"
         run: |
           rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
