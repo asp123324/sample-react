@@ -25,19 +25,12 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-  
-
     - name: Configure AWS credentials
-      run: |
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY }}  # Replace with your actual secret name
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ap-south-1
+      run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && aws configure set region $AWS_REGION
 
     - name: Sync files to S3
-      run: |
-        aws s3 sync ./build s3://my-react-app-bucket1 --delete
-
-    - name: Invalidate CloudFront cache
-      run: |
-        aws cloudfront create-invalidation --distribution-id YOUR_CLOUDFRONT_DIST_ID --paths "/*"
-        # Only include this step if using CloudFront
+      run: aws s3 sync ./build s3://my-react-app-bucket1 --delete
