@@ -25,13 +25,14 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-   
+  
+
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ aws_key}}
-        aws-secret-access-key: ${{ aws_key }}
-        aws-region: ap-south-1  # Mumbai region
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY }}  # Replace with your actual secret name
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ap-south-1
+      run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && aws configure set region $AWS_REGION
 
     - name: Sync files to S3
       run: |
