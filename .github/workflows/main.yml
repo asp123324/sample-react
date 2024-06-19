@@ -36,8 +36,9 @@ jobs:
     - name: Sync files to S3
       run: |
         if [ -d "./build" ]; then
-          aws s3 sync ./build s3://my-react-app-bucket1 --delete
+          aws s3 sync ./build s3://my-react-app-bucket1 --delete --exclude "*.html" --exclude "*.js" --exclude "*.css"
+          aws s3 cp --recursive --exclude "*" --include "*.html" --include "*.js" --include "*.css" ./build/ s3://my-react-app-bucket1
         else
           echo "./build directory does not exist. Uploading static files directly."
-          aws s3 cp --recursive --exclude "*" --include "*.html" ./ s3://my-react-app-bucket1
+          aws s3 cp --recursive --exclude "*" --include "*.html" --include "*.js" --include "*.css" ./ s3://my-react-app-bucket1
         fi
