@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean
+name: Deploy to AWS
 
 on:
   push:
@@ -14,7 +14,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-  
     - name: Cache npm dependencies
       uses: actions/cache@v2
       with:
@@ -26,22 +25,21 @@ jobs:
     - name: Install dependencies
       run: npm install
 
- 
+    - name: Build project
+      run: npm run build
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        ssh-private-key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-south-1  # Mumbai region
 
-    - name: Add DigitalOcean server to known_hosts
+    - name: Sync files to S3
       run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H 64.227.65.168 >> ~/.ssh/known_hosts
+        aws s3 sync ./build s3://my-react-app-bucket1 --delete
 
-    - name: Copy files to DigitalOcean
+    - name: Invalidate CloudFront cache
       run: |
-        rsync -avz --delete ./build/ root@64.227.65.168:/var/www/html/
-
-    - name: Execute deployment script
-      run: |
-        ssh root@64.227.65.168 'bash -s' < ./scripts/deploy.sh
+        aws cloudfront create-invalidation --distribution-id YOUR_CLOUDFRONT_DIST_ID --paths "/*"
+        # Only include this step if using CloudFront
